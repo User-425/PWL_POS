@@ -58,3 +58,5 @@ Route::resource('photos', PhotoController::class);
 //     'update',
 //     'destroy'
 // ]);
+
+Route::get('/greeting', [WelcomeController::class, 'greeting']);
