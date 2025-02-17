@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PhotoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,3 +42,19 @@ Route::get('/hello', [WelcomeController::class, 'hello']);
 Route::get('/world', function () {
     return 'World';
 });
+
+Route::resource('photos', PhotoController::class);
+
+// Include only specific methods (Whitelist method)
+// Route::resource('photos', PhotoController::class)->only([
+//     'index',
+//     'show'
+// ]);
+//
+// Exclude specific methods (Blacklist method)
+// Route::resource('photos', PhotoController::class)->except([
+//     'create',
+//     'store',
+//     'update',
+//     'destroy'
+// ]);
