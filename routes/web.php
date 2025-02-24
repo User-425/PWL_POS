@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\LevelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,3 +61,5 @@ Route::resource('photos', PhotoController::class);
 // ]);
 
 Route::get('/greeting', [WelcomeController::class, 'greeting']);
+
+Route::get('/level', [LevelController::class, 'index']);
