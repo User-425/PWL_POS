@@ -9,6 +9,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,29 +24,29 @@ use App\Http\Controllers\KategoriController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/about', [AboutController::class, 'index']);
+// Route::get('/about', [AboutController::class, 'index']);
 
-Route::get('/user/{name}', function ($name) {
-    return 'Nama saya ' . $name;
-});
+// Route::get('/user/{name}', function ($name) {
+//     return 'Nama saya ' . $name;
+// });
 
-Route::get('/posts/{post}/comments/{comment}', function ($postId, $commentId) {
-    return 'Pos ke-' . $postId . " Komentar ke-: " . $commentId;
-});
+// Route::get('/posts/{post}/comments/{comment}', function ($postId, $commentId) {
+//     return 'Pos ke-' . $postId . " Komentar ke-: " . $commentId;
+// });
 
-Route::get('/articles/{id}', [ArticleController::class, 'index']);
+// Route::get('/articles/{id}', [ArticleController::class, 'index']);
 
-Route::get('/user/{name?}', function ($name = 'John') {
-    return 'Nama saya ' . $name;
-});
+// Route::get('/user/{name?}', function ($name = 'John') {
+//     return 'Nama saya ' . $name;
+// });
 
-Route::get('/hello', [WelcomeController::class, 'hello']);
+// Route::get('/hello', [WelcomeController::class, 'hello']);
 
-Route::get('/world', function () {
-    return 'World';
-});
+// Route::get('/world', function () {
+//     return 'World';
+// });
 
-Route::resource('photos', PhotoController::class);
+// Route::resource('photos', PhotoController::class);
 
 // Include only specific methods (Whitelist method)
 // Route::resource('photos', PhotoController::class)->only([
@@ -65,4 +66,5 @@ Route::get('/greeting', [WelcomeController::class, 'greeting']);
 
 Route::get('/level', [LevelController::class, 'index']);
 Route::get('/kategori', [KategoriController::class, 'index']);
+Route::get('/user', [UserController::class, 'index']);
 
