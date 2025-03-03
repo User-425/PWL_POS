@@ -22,6 +22,7 @@ class UserController extends Controller
         // UserModel::where('username', 'customer-1')->update($data);
 
         // Jobsheet 4, Praktikum 1.2
+        // ---------------------------
 
         // $data = [
         //     'level_id' => 2,
@@ -33,5 +34,39 @@ class UserController extends Controller
 
         // $user = UserModel::all();
         // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.1.1
+        // ---------------------------
+
+        // $user = UserModel::find(1);
+        // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.1.4
+        // ---------------------------
+
+        // $user = UserModel::where('level_id',1)->first();
+        // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.1.6
+        // ---------------------------
+
+        // $user = UserModel::firstWhere('level_id',1);
+        // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.1.8
+        // ---------------------------
+
+        // $user = UserModel::findOr(1, ['username' , 'nama'], function(){
+        //     abort(404);
+        // });
+        // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.1.10
+        // ---------------------------
+
+         $user = UserModel::findOr(20, ['username' , 'nama'], function(){
+            abort(404);
+        });
+        return view('user', ['data' => $user]);
     }
 }
