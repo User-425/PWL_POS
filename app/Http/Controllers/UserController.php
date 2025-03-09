@@ -176,7 +176,17 @@ class UserController extends Controller
 
         // Jobsheet 4, Praktikum 2.6.2
         // ---------------------------
-        $user = UserModel::all();
+        // $user = UserModel::all();
+        // return view('user', ['data' => $user]);
+
+        // Jobsheet 4, Praktikum 2.7.2
+        // ---------------------------
+        // $user = UserModel::with('level')->get();
+        // dd($user);
+
+        // Jobsheet 4, Praktikum 2.7.4
+        // ---------------------------
+        $user = UserModel::with('level')->get();
         return view('user', ['data' => $user]);
     }
 
@@ -185,7 +195,8 @@ class UserController extends Controller
         return view('user_tambah');
     }
 
-    public function tambah_simpan(Request $request){
+    public function tambah_simpan(Request $request)
+    {
         UserModel::create([
             'username' => $request->username,
             'nama' => $request->nama,
@@ -195,12 +206,14 @@ class UserController extends Controller
         return redirect('/user');
     }
 
-    public function ubah($id){
+    public function ubah($id)
+    {
         $user = UserModel::find($id);
         return view('user_ubah', ['data' => $user]);
     }
 
-    public function ubah_simpan($id, Request $request){
+    public function ubah_simpan($id, Request $request)
+    {
         $user = UserModel::find($id);
 
         $user->username = $request->username;
@@ -213,7 +226,8 @@ class UserController extends Controller
         return redirect('/user');
     }
 
-    public function hapus($id){
+    public function hapus($id)
+    {
         $user = UserModel::find($id);
         $user->delete();
 

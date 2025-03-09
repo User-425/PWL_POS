@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\LevelModel;
 
 class UserModel extends Model
 {
@@ -18,4 +19,9 @@ class UserModel extends Model
         'nama',
         'password',
     ];
+
+    public function level()
+    {
+        return $this->hasOne(LevelModel::class, 'level_id', 'level_id');
+    }
 }
