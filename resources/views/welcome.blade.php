@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.template')
 
-        <title>Laravel</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
-
-
-    </head>
-    <body class="antialiased">
-            <h2>Pemrograman Web Lanjut 2025</h2>
-            <h3>Semangat Belajar Laravel 10</h3>
-    </body>
-</html>
+@section('content')
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Halo, Apa Kabar!</h3>
+        <div class="card-tools"></div>
+    </div>
+    <div class="card-body">
+        <p>Selamat datang semua, ini adalah halaman utama dari aplikasi ini</p>
+    </div>
+</div>
+@endsection

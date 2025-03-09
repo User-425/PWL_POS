@@ -22,7 +22,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [WelcomeController::class, 'index']);
 
 // Route::get('/about', [AboutController::class, 'index']);
 
