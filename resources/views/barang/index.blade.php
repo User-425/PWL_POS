@@ -38,6 +38,7 @@
                     <th>ID</th>
                     <th>Kode Barang</th>
                     <th>Nama Barang</th>
+                    <th>Kategori</th>
                     <th>Harga Beli</th>
                     <th>Harga Jual</th>
                     <th>Aksi</th>
@@ -85,6 +86,12 @@
                 className: "",
                 orderable: true,
                 searchable: true
+            },
+            {
+                data: "kategori.kategori_nama",
+                className: "",
+                orderable: false,
+                searchable: false
             },
             {
                 data: "harga_beli",
