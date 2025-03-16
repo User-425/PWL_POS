@@ -202,6 +202,14 @@ class UserController extends Controller
         return redirect('/');
     }
 
+    public function show_ajax(String $id)
+    {
+        $user = UserModel::find($id);
+        $level = LevelModel::select('level_id', 'level_nama')->get();
+
+        return view('user.show_ajax', compact('user', 'level'));
+    }
+
     public function edit_ajax(String $id)
     {
         $user = UserModel::find($id);
