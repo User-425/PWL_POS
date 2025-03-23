@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\LevelModel;
 
-class UserModel extends Model
+class UserModel extends Authenticatable
 {
     use HasFactory;
 
@@ -19,6 +20,10 @@ class UserModel extends Model
         'nama',
         'password',
     ];
+
+    protected $hidden = ['password'];
+
+    protected $casts = ['password' => 'hashed'];
 
     public function level()
     {
