@@ -22,7 +22,7 @@ use App\Http\Controllers\AuthController;
 */
 
 
-Route::pattern('id', '[0-9]+'); 
+Route::pattern('id', '[0-9]+');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
@@ -34,7 +34,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/', [WelcomeController::class, 'index']);
-    
+
     Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index']);
@@ -92,6 +92,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
             Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
             Route::delete('/{id}', [BarangController::class, 'destroy']);
+            Route::get('/import', [BarangController::class, 'import']);
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
         });
     });
 
@@ -134,5 +136,5 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [SupplierController::class, 'destroy']);
         });
     });
-    
+
 });
