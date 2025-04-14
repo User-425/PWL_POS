@@ -9,6 +9,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\LevelModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -410,18 +411,33 @@ class UserController extends Controller
 
         $sheet->setTitle('Data User');
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $filename = 'Data User '.date('Y-m-d H:i:s').'.xlsx';
+        $filename = 'Data User ' . date('Y-m-d H:i:s') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
         header('Cache-Control: max-age=1');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Last-Modified: '. gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
         header('Cache-Control: cache, must-revalidate');
         header('Pragma: public');
 
         $writer->save('php://output');
         exit;
+    }
+
+
+    public function export_pdf()
+    {
+        $user = UserModel::select('user_id', 'username', 'nama', 'level_id')
+            ->with('level')
+            ->orderBy('user_id')
+            ->get();
+
+        $pdf = Pdf::loadView('user.export_pdf', ['user' => $user]);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true); // set true if there are images from URLs
+        $pdf->render();
+        return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
