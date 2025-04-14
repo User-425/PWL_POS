@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use App\Models\LevelModel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class UserController extends Controller
 {
@@ -288,5 +289,90 @@ class UserController extends Controller
             }
         }
         return redirect('/user');
+    }
+
+    public function import()
+    {
+        return view('user.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_user');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            $insert = [];
+            $errors = [];
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) {
+                        // Validate level_id exists
+                        $level = LevelModel::where('level_id', $value['C'])->first();
+                        if (!$level) {
+                            $errors[] = "Baris {$baris}: Level ID {$value['C']} tidak ditemukan";
+                            continue;
+                        }
+
+                        // Check if username already exists
+                        $existingUser = UserModel::where('username', $value['A'])->first();
+                        if ($existingUser) {
+                            $errors[] = "Baris {$baris}: Username {$value['A']} sudah digunakan";
+                            continue;
+                        }
+
+                        $insert[] = [
+                            'username' => $value['A'],
+                            'nama' => $value['B'],
+                            'level_id' => $value['C'],
+                            'password' => bcrypt($value['D'] ?? '123456'), // Default password if not provided
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+
+                if (count($insert) > 0) {
+                    UserModel::insert($insert);
+
+                    $message = 'Data berhasil diimport';
+                    if (count($errors) > 0) {
+                        $message .= ', tetapi beberapa data gagal: ' . implode(', ', $errors);
+                    }
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => $message
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Tidak ada data valid yang diimport. ' . implode(', ', $errors)
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
     }
 }
