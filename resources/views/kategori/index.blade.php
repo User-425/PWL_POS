@@ -4,9 +4,10 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-sm btn-info mt-1">Import</button>
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/export_excel') }}">Export</a>
-            <button onclick="modalAction('{{ url('/kategori/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-info">Import Kategori</button>
+            <a href="{{ url('/kategori/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Kategori</a>
+            <a href="{{ url('/kategori/export_pdf') }}" class="btn btn-warning">Export Kategori (PDF)</a>
+            <button onclick="modalAction('{{ url('/kategori/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
         </div>
     </div>
     <div class="card-body">
@@ -50,28 +51,29 @@
                 "type": "POST",
             },
             columns: [{
-                data: "DT_RowIndex",
-                className: "text-center",
-                orderable: false,
-                searchable: false
-            },{
-                data: "kategori_kode",
-                className: "",
-                orderable: true,
-                searchable: true
-            },
-            {
-                data: "kategori_nama",
-                className: "",
-                orderable: true,
-                searchable: true
-            },
-             {
-                data: "aksi",
-                className: "",
-                orderable: false,
-                searchable: false
-            }]
+                    data: "DT_RowIndex",
+                    className: "text-center",
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: "kategori_kode",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "kategori_nama",
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "aksi",
+                    className: "",
+                    orderable: false,
+                    searchable: false
+                }
+            ]
         });
     });
 </script>
