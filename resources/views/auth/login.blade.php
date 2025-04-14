@@ -61,6 +61,7 @@
                         <!-- /.col -->
                     </div>
                 </form>
+                <a href="/register" class="text-center">Not a member? Register Now.</a>
             </div>
             <!-- /.card-body -->
         </div>
