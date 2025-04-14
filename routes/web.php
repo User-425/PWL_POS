@@ -155,3 +155,8 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 });
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [App\Http\Controllers\UserController::class, 'profile']);
+    Route::post('/profile/update-picture', [App\Http\Controllers\UserController::class, 'updateProfilePicture']);
+});

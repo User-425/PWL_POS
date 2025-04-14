@@ -440,4 +440,53 @@ class UserController extends Controller
         $pdf->render();
         return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
     }
+
+    public function profile()
+    {
+        $user = auth()->user();
+        $breadcrumb = (object) [
+            'title' => 'Profile',
+            'list' => ['Home', 'Profile']
+        ];
+
+        $page = (object) [
+            'title' => 'User Profile'
+        ];
+
+        $activeMenu = 'profile';
+        return view('profile', compact('breadcrumb', 'page', 'user', 'activeMenu'));
+    }
+
+    public function updateProfilePicture(Request $request)
+    {
+        $request->validate([
+            'profile_picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $authUser = auth()->user();
+        $user = UserModel::find($authUser->user_id);
+
+        if ($user->profile_picture && file_exists(public_path($user->profile_picture))) {
+            unlink(public_path($user->profile_picture));
+        }
+
+        $file = $request->file('profile_picture');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = 'uploads/profile/';
+
+        if (!file_exists(public_path($filePath))) {
+            mkdir(public_path($filePath), 0777, true);
+        }
+
+        $file->move(public_path($filePath), $fileName);
+
+        $user->profile_picture = $filePath . $fileName;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile picture updated successfully',
+            'image_url' => $user->getProfilePictureUrl()
+        ]);
+    }
 }
