@@ -119,14 +119,20 @@ class PembelianController extends Controller
                     'jumlah' => $product['quantity'],
                 ]);
 
-                // Tambahkan stok
-                StokModel::create([
-                    'barang_id' => $product['barang_id'],
-                    'supplier_id' => $request->supplier_id,
-                    'user_id' => Auth::id(),
-                    'stok_tanggal' => now(),
-                    'stok_jumlah' => $product['quantity'],
-                ]);
+                // Update stock
+                $stok = StokModel::where('barang_id', $product['barang_id'])->first();
+                if ($stok) {
+                    $stok->stok_jumlah += $product['quantity'];
+                    $stok->save();
+                } else {
+                    StokModel::create([
+                        'barang_id' => $product['barang_id'],
+                        'supplier_id' => $request->supplier_id,
+                        'user_id' => Auth::id(),
+                        'stok_tanggal' => now(),
+                        'stok_jumlah' => $product['quantity'],
+                    ]);
+                }
             }
 
             DB::commit();

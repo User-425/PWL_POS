@@ -34,4 +34,5 @@ class StokModel extends Model
     {
         return $this->belongsTo(UserModel::class, 'user_id', 'user_id');
     }
+
 }
