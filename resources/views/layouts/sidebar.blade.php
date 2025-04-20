@@ -74,6 +74,12 @@
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="{{ url('/pembelian') }}" class="nav-link {{ ($activeMenu == 'pembelian')? 'active' : '' }} ">
+                    <i class="nav-icon fas fa-shopping-cart"></i>
+                    <p>Transaksi Pembelian</p>
+                </a>
+            </li>
             <li class="nav-header">Data Supplier</li>
             <li class="nav-item">
                 <a href="{{ url('/supplier') }}" class="nav-link {{ ($activeMenu == 'supplier')? 'active' : '' }} ">

@@ -9,6 +9,7 @@ use App\Models\BarangModel;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -92,7 +93,7 @@ class BarangController extends Controller
         return redirect('/barang')->with('success', 'Data barang berhasil disimpan');
     }
 
-    public function show(String $id)
+    public function show(string $id)
     {
         $barang = BarangModel::with('kategori')->find($id);
         $breadcrumb = (object) [
@@ -106,7 +107,7 @@ class BarangController extends Controller
         return view('barang.show', compact('breadcrumb', 'page', 'barang', 'activeMenu'));
     }
 
-    public function edit(String $id)
+    public function edit(string $id)
     {
         $barang = BarangModel::find($id);
         $kategori = KategoriModel::all();
@@ -143,7 +144,7 @@ class BarangController extends Controller
         return redirect('/barang')->with('success', 'Data barang berhasil diubah');
     }
 
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
         $check = BarangModel::find($id);
         if (!$check) {
@@ -190,7 +191,7 @@ class BarangController extends Controller
         return redirect('/');
     }
 
-    public function show_ajax(String $id)
+    public function show_ajax(string $id)
     {
         $barang = BarangModel::find($id);
         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
@@ -198,7 +199,7 @@ class BarangController extends Controller
         return view('barang.show_ajax', compact('barang', 'kategori'));
     }
 
-    public function edit_ajax(String $id)
+    public function edit_ajax(string $id)
     {
         $barang = BarangModel::find($id);
         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
@@ -395,5 +396,36 @@ class BarangController extends Controller
         $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
         $pdf->render();
         return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    public function getBySupplier(Request $request)
+    {
+        $supplierId = $request->query('supplier_id');
+
+        if (!$supplierId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Supplier ID is required',
+                'products' => []
+            ]);
+        }
+
+        $products = DB::table('m_barang')
+            ->select(
+                'm_barang.barang_id',
+                'm_barang.barang_kode',
+                'm_barang.barang_nama',
+                'm_barang.harga_beli',
+                DB::raw('(SELECT SUM(stok_jumlah) FROM t_stok WHERE barang_id = m_barang.barang_id) as stock')
+            )
+            ->join('t_stok', 'm_barang.barang_id', '=', 't_stok.barang_id')
+            ->where('t_stok.supplier_id', $supplierId)
+            ->groupBy('m_barang.barang_id', 'm_barang.barang_kode', 'm_barang.barang_nama', 'm_barang.harga_beli')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'products' => $products
+        ]);
     }
 }
