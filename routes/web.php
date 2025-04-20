@@ -7,6 +7,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AuthController;
 
 
@@ -154,6 +155,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
         });
     });
+});
+
+Route::group(['prefix' => 'transaksi'], function () {
+    Route::get('/', [TransactionController::class, 'index']);
+    Route::post('/list', [TransactionController::class, 'list']);
+    Route::get('/create', [TransactionController::class, 'create']);
+    Route::post('/', [TransactionController::class, 'store']);
+    Route::get('/{id}', [TransactionController::class, 'show']);
+    Route::get('/{id}/receipt', [TransactionController::class, 'receipt']);
+    Route::get('/stats', [TransactionController::class, 'stats']);
+    Route::get('/{id}/detail', [TransactionController::class, 'detail']);
 });
 
 Route::middleware(['auth'])->group(function () {
