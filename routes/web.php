@@ -7,7 +7,10 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\StockController;
 
 
 /*
@@ -154,6 +157,37 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
         });
     });
+});
+
+Route::group(['prefix' => 'transaksi'], function () {
+    Route::get('/', [TransactionController::class, 'index']);
+    Route::post('/list', [TransactionController::class, 'list']);
+    Route::get('/create', [TransactionController::class, 'create']);
+    Route::post('/store', [TransactionController::class, 'store'])->name('transaksi.store');
+    Route::post('/', [TransactionController::class, 'store']);
+    Route::get('/stats', [TransactionController::class, 'stats']);
+    Route::get('/{id}', [TransactionController::class, 'show']);
+    Route::get('/{id}/receipt', [TransactionController::class, 'receipt']);
+    Route::get('/{id}/detail', [TransactionController::class, 'detail']);
+});
+
+Route::group(['prefix' => 'pembelian'], function () {
+    Route::get('/', [PembelianController::class, 'index'])->name('pembelian.index');
+    Route::get('/list', [PembelianController::class, 'list'])->name('pembelian.list');
+    Route::get('/create', [PembelianController::class, 'create'])->name('pembelian.create');
+    Route::post('/', [PembelianController::class, 'store'])->name('pembelian.store');
+    Route::get('/{id}', [PembelianController::class, 'show'])->name('pembelian.show');
+    Route::get('/{id}/receipt', [PembelianController::class, 'receipt'])->name('pembelian.receipt');
+    Route::get('/{id}/detail', [PembelianController::class, 'detail'])->name('pembelian.detail');
+});
+
+Route::get('/api/products-by-supplier', [BarangController::class, 'getBySupplier'])->name('api.products.by.supplier');
+
+Route::group(['prefix' => 'stok'], function () {
+    Route::get('/', [StockController::class, 'index']);
+    Route::post('/check', [StockController::class, 'checkStock']);
+    Route::post('/', [StockController::class, 'store']);
+    Route::get('/history/{id}', [StockController::class, 'history']); // Add this missing route
 });
 
 Route::middleware(['auth'])->group(function () {
