@@ -64,24 +64,60 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="far fa-calendar-alt"></i>
-                            </span>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">Filter Data</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tanggal Mulai:</label>
+                                <div class="input-group date" id="start-date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input"
+                                        data-target="#start-date" id="start_date">
+                                    <div class="input-group-append" data-target="#start-date"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="text" class="form-control float-right" id="date-range">
-                        <div class="input-group-append">
-                            <button type="button" id="filter-date" class="btn btn-default">Filter</button>
-                            <button type="button" id="reset-filter" class="btn btn-default">Reset</button>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Tanggal Selesai:</label>
+                                <div class="input-group date" id="end-date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input"
+                                        data-target="#end-date" id="end_date">
+                                    <div class="input-group-append" data-target="#end-date"
+                                        data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="button" id="filter-date" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search"></i> Filter
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <table id="transactions-table" class="table table-bordered table-striped">
+    <table id="transactions-table" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Kode Transaksi</th>
@@ -197,7 +233,7 @@
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('adminlte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet" href="{{ asset('adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 <style>
     .small-box .icon i {
         font-size: 65px;
@@ -238,16 +274,22 @@
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('adminlte/plugins/moment/moment.min.js') }}"></script>
-<script src="{{ asset('adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script src="{{ asset('adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <script>
     $(function() {
-        $('#date-range').daterangepicker({
-            locale: {
-                format: 'DD/MM/YYYY'
-            },
-            startDate: moment().subtract(30, 'days'),
-            endDate: moment()
+        // Initialize date pickers
+        $('#start-date').datetimepicker({
+            format: 'YYYY-MM-DD'
         });
+        $('#end-date').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+
+        // Set default dates (last 30 days)
+        var today = moment();
+        var thirtyDaysAgo = moment().subtract(30, 'days');
+        $('#start_date').val(thirtyDaysAgo.format('YYYY-MM-DD'));
+        $('#end_date').val(today.format('YYYY-MM-DD'));
 
         var table = $('#transactions-table').DataTable({
             processing: true,
@@ -283,10 +325,8 @@
                 url: "{{ url('/transaksi/list') }}",
                 type: "POST",
                 data: function(d) {
-                    if ($('#date-range').data('daterangepicker')) {
-                        d.start_date = $('#date-range').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                        d.end_date = $('#date-range').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                    }
+                    d.start_date = $('#start_date').val();
+                    d.end_date = $('#end_date').val();
                     d._token = "{{ csrf_token() }}";
                 }
             },
@@ -347,14 +387,6 @@
             updateTransactionStats();
         });
 
-        // Reset filter button click
-        $('#reset-filter').on('click', function() {
-            $('#date-range').data('daterangepicker').setStartDate(moment().subtract(30, 'days'));
-            $('#date-range').data('daterangepicker').setEndDate(moment());
-            table.ajax.reload();
-            updateTransactionStats();
-        });
-
         // Transaction detail click handler (both for the code link and detail button)
         $('#transactions-table').on('click', '.transaction-link, .btn-detail', function() {
             var id = $(this).data('id');
@@ -363,15 +395,12 @@
 
         // Function to update the transaction statistics
         function updateTransactionStats() {
-            var start = $('#date-range').data('daterangepicker').startDate.format('YYYY-MM-DD');
-            var end = $('#date-range').data('daterangepicker').endDate.format('YYYY-MM-DD');
-
             $.ajax({
                 url: '{{ url('/transaksi/stats') }}',
                 type: 'GET',
                 data: {
-                    start_date: start,
-                    end_date: end
+                    start_date: $('#start_date').val(),
+                    end_date: $('#end_date').val()
                 },
                 success: function(response) {
                     $('#total-transactions').text(response.total_transactions);
@@ -400,45 +429,45 @@
 
                     if (response.success) {
                         var transaction = response.transaction;
-                        var detailHtml = '<div class="row">' +
-                            '<div class="col-md-6">' +
-                            '<p><strong>Kode Transaksi:</strong> ' + transaction.penjualan_kode + '</p>' +
-                            '<p><strong>Tanggal:</strong> ' + transaction.formatted_date + '</p>' +
-                            '</div>' +
-                            '<div class="col-md-6">' +
-                            '<p><strong>Kasir:</strong> ' + transaction.user.nama + '</p>' +
-                            '<p><strong>Total:</strong> Rp ' + transaction.formatted_total + '</p>' +
-                            '</div>' +
-                            '</div>' +
-                            '<hr>' +
-                            '<h5>Detail Produk:</h5>' +
-                            '<table class="table table-sm table-bordered">' +
-                            '<thead><tr><th>Produk</th><th>Harga</th><th>Jumlah</th><th>Subtotal</th></tr></thead>' +
-                            '<tbody>';
+
+                        // Update detail fields
+                        $('#detail-kode').text(transaction.penjualan_kode);
+                        $('#detail-tanggal').text(transaction.formatted_date);
+                        $('#detail-pembeli').text(transaction.pembeli || '-');
+                        $('#detail-kasir').text(transaction.user.nama);
+                        $('#detail-total-barang').text(transaction.details.length);
+                        $('#detail-total-harga').text('Rp ' + numberFormat(transaction.total));
+
+                        var itemsHtml = '';
+                        var grandTotal = 0;
 
                         $.each(transaction.details, function(i, detail) {
-                            detailHtml += '<tr>' +
+                            var subtotal = detail.harga * detail.jumlah;
+                            grandTotal += subtotal;
+
+                            itemsHtml += '<tr>' +
+                                '<td>' + (i + 1) + '</td>' +
                                 '<td>' + detail.barang.barang_nama + '</td>' +
                                 '<td>Rp ' + numberFormat(detail.harga) + '</td>' +
                                 '<td>' + detail.jumlah + '</td>' +
-                                '<td>Rp ' + numberFormat(detail.harga * detail.jumlah) + '</td>' +
+                                '<td>Rp ' + numberFormat(subtotal) + '</td>' +
                                 '</tr>';
                         });
 
-                        detailHtml += '</tbody></table>';
-
-                        $('#detail-content').html(detailHtml);
+                        $('#detail-items').html(itemsHtml);
+                        $('#detail-grand-total').text('Rp ' + numberFormat(grandTotal));
                         $('#detail-content').show();
                     } else {
-                        $('#detail-error').text(response.message).show();
+                        $('#detail-error').show();
                     }
                 },
                 error: function(xhr) {
                     $('#detail-loading').hide();
-                    $('#detail-error').text('Error loading transaction details').show();
+                    $('#detail-error').show();
                 }
             });
         }
+
         function numberFormat(number) {
             return new Intl.NumberFormat('id-ID').format(number);
         }
