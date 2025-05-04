@@ -2,23 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\LevelModel;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class UserModel extends Authenticatable implements JWTSubject
 {
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
     public function getJWTCustomClaims()
     {
         return [];
     }
-
-    use HasFactory;
 
     protected $table = 'm_user';
     protected $primaryKey = 'user_id';
@@ -29,6 +27,7 @@ class UserModel extends Authenticatable implements JWTSubject
         'nama',
         'password',
         'profile_picture',
+        'image',
     ];
 
     protected $hidden = ['password'];
@@ -60,5 +59,12 @@ class UserModel extends Authenticatable implements JWTSubject
         return $this->profile_picture
             ? asset($this->profile_picture)
             : asset('adminlte/dist/img/user2-160x160.jpg');
+    }
+
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn($image) => url('/storage/posts/' . $image),
+        );
     }
 }
