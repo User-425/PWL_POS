@@ -27,7 +27,7 @@ class UserController extends Controller
     public function update(Request $request, UserModel $user)
     {
         $user->update($request->all());
-        return UserModel::find($user);
+        return $user;
     }
 
     public function destroy(UserModel $user)
