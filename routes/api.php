@@ -54,3 +54,5 @@ Route::post('barangs', [BarangController::class, 'store']);
 Route::get('barangs/{barang}', [BarangController::class, 'show']);
 Route::put('barangs/{barang}', [BarangController::class, 'update']);
 Route::delete('barangs/{barang}', [BarangController::class, 'destroy']);
+Route::post('barangs/upload', [BarangController::class, 'upload'])->name('barangs.upload');
+Route::get('barangs-with-images', [BarangController::class, 'getProductsWithImages']);

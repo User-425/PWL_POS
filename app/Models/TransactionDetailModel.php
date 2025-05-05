@@ -28,4 +28,9 @@ class TransactionDetailModel extends Model
     {
         return $this->belongsTo(BarangModel::class, 'barang_id', 'barang_id');
     }
+
+    public function getProductImage()
+    {
+        return $this->barang->image ?? null;
+    }
 }
